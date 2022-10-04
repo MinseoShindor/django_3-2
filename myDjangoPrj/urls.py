@@ -21,3 +21,6 @@ urlpatterns = [ # IP주소/
     path('blog/', include('blog.urls')), # IP주소/blog
     path('', include('single_pages.urls')) #IP주소/
 ]
+
+# urlpatterns += static(settings.MEDIA_URL, )
+
