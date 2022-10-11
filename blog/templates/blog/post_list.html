@@ -89,9 +89,9 @@
           <img class="card-img-top" src="https://picsum.photos/seed/{{p.pk}}/800/200" alt="random image" />
           {% endif %}
           <div class="card-body">
-            <h2 class="card-title">{{p.title}}</h2>
+            <h2 class="card-title">{{p.title | lower}}</h2>
             {% if p.hook_text %}
-            <h5 class="text-mute"> {{p.hook_text}} </h5>
+            <h5 class="text-muted"> {{p.hook_text}} </h5>
             {% endif %}
             <p class="card-text">{{p.content | truncatechars:100 }}</p>
             <a class="btn btn-primary" href="{{p.get_absolute_url}}">Read more →</a>
