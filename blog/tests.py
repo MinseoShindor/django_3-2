@@ -8,8 +8,8 @@ class TestView(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user_kim = User.objects.create_user(username="kim", password="somepassword")
-        self.user_lee = User.objects.create_user(username="lee", password="somepassword")
+        self.user_kim = User.objects.create_user(username="kim", password="eognsld905!")
+        self.user_lee = User.objects.create_user(username="lee", password="eognsld905!")
 
     def nav_test(self, soup):
         navbar = soup.nav

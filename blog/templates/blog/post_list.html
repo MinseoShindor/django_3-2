@@ -9,7 +9,7 @@
         <div class="card mb-4">
           <img class="card-img-top" src="{{p.head_image.url}}" alt="{{p}}의 head_image" />
           <div class="card-body">
-            <h2 class="card-title">{{p.title | upper}}</h2>
+            <h2 class="card-title">{{p.title | lower}}</h2>
             {% if p.hook_text %}
             <h5 class="text-muted">{{p.hook_text}}</h5>
             {% endif %}
