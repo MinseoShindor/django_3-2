@@ -10,9 +10,8 @@
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static 'blog/bootstrap4/bootstrap.min.css' %}" rel="stylesheet" type="text/css" media="screen">
-        <link href="{% static 'blog/css/styles.css' %}" rel="stylesheet" />
-        <script src="https://kit.fontawesome.com/7534f10404.js" crossorigin="anonymous"></script>
+        <link href="{% static 'blog/bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" media="screen">
+        <link href="css/styles.css" rel="stylesheet" />
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -23,7 +22,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About Me</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                         <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Blog</a></li>
                     </ul>
@@ -33,47 +32,26 @@
         <!-- Page content-->
         <div class="container mt-5">
             <div class="row">
-                <div class="col-lg-8" id="main-area">
+                <div class="col-lg-8">
                     <!-- Post content-->
-                    <div id="post-area ">
+                    <article>
                         <!-- Post header-->
-                        <header class="mb-4"> <!-- mainarea 10/18 -->
+                        <header class="mb-4">
                             <!-- Post title-->
-                            <h1 class="fw-bolder mb-1">{{post.title | upper}}</h1>
-                            {% if post.hook_text %}
-                            <h5 class="text-mute"> {{p.hook_text}} </h5>
-                            {% endif %}
+                            <h1 class="fw-bolder mb-1">{{post.title}}</h1>
                             <!-- Post meta content-->
-                            <div class="text-muted fst-italic mb-2">Posted on {{post.created_at | date:"Y-m-d h:m:s"}} by 작성자(추후 개발 예정)</div>
+                            <div class="text-muted fst-italic mb-2">Posted on {{post.created_at}} by 작성자(추후 개발 예정)</div>
                             <!-- Post categories-->
                             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
                             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
                         </header>
                         <!-- Preview image figure-->
-                        <figure class="mb-4">
-                            {% if post.head_image %}
-                            <img class="img-fluid rounded" src="{{post.head_image.url}}" alt="{{p.title}}의 head_image" />
-                            {% else %}
-                            <img class="img-fluid rounded" src="https://picsum.photos/seed/{{post.pk}}/800/200" alt="random image" />
-                            {% endif %}
-                        </figure>
+                        <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
                         <!-- Post content-->
                         <section class="mb-5">
                             <p class="fs-5 mb-4">{{post.content}}</p>
-                            {% if post.file_upload %} <!-- 2022 10 11 -->
-                            <a href="{{post.file_upload.url}}" class="btn btn-outline-dark" role="button" download>
-                                {% if post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
-                                <i class="fa-thin fa-file-excel"></i>
-                                {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
-                                <i class="fa-light fa-file-word"></i>
-                                {% else %}
-                                <i class="fa-light fa-file"></i>
-                                {% endif %}
-                                Download {{post.get_file_name}}
-                            </a>
-                            {% endif %}
                         </section>
-                    </div>
+                    </article>
                     <!-- Comments section-->
                     <section class="mb-5">
                         <div class="card bg-light">
@@ -167,7 +145,6 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-
     </body>
 </html>
 
@@ -185,7 +162,7 @@
     <h3>{{post.created_at}}</h3>
     <p>{{post.content}}</p>
 
-    <hr/>
+    <hr />
     <h4>여기에 댓글을 넣으면 되겠죠?</h4>
 </body>
 </html>-->
