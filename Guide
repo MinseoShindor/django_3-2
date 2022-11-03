@@ -1,0 +1,210 @@
+## 중간 실습 시험 준비
+
+1. Pycharm Project에 새로운 폴더 생성 후 New Projects 생성 (일반 프로젝트 생성)
+2. cmd 창에서 생성 확인 후 venv/Scripts/activate.bat 실행 (가상환경 실행)
+3. pip install django (django 설치)
+4. django-admin startproject (프로젝트명) -> django 프로젝트 생성
+5. cd ./(django프로젝트명) 후 ls 해서 manage.py 확인
+6. python manage.py migrate (데이터 베이스 생성) --> ls 로 db.sqlite3 생성된거 확인
+7. python manage.py createsuperuser --> 관리자 계정 생성
+8. python manage.py (django 앱명) --> django app 생성 --> ls로 생성 확인
+9.(일반 프로젝트) > settings.py 에 생성한 App 추가하기
+INSTALLED_APPS = {
+'(생성한 앱 이름)',
+'(생성한 앱 이름)'
+}
+
+<기능>
+1.Model 만들기 -> models.py에서 작성
+
+from django.db import models
+
+<모델 작성 방법>
+class 모델 이름(models.Model):
+    속성 작성
+-----> 모델 작성 후 cmd에서 python manage.py makemigrations
+-----------> python manage.py migrate 필수
+
+이후 admin에 모델 등록하기
+app > admin.py
+from django.contrib import admin
+from .models import (모델명)
+
+admin.site.register(모델명)
+
+모델 적용 확인 >> localhost:8000/admin
+-----------------------------------------------------
+2. __str__ 함수 선언 --> string 표현 --> models.py에서 작성
+
+from django.db import models
+
+<__str__함수 작성 방법>
+! 반드시 model 아래에 들여쓰기 해서 써야함 !
+def __str__(self):
+    return f'{self.return을 원하는값}'
+    ex> return f'[self.pk}] {self.title}'
+
+<눌렀을때 해당 페이지로 이동하는 함수>
+def get_absolute_url(self):
+    return f'/(앱명)/{self.pk}/'
+
+DateTimeField 작성시 새로 작성했을 때 생성 -> DateTimeField(auto_now_add=True)
+""""""""" 수정했을 때 업데이트 -> DateTimeField(auto_now = True)
+
+++ IF 서울 기준으로 작성 시간을 설정하고 싶을 시
+Settings.py >> TIME_ZONE = 'Asia/Seoul' 로 변경
+
+-----------------------------------------------------------
+
+웹페이지 -> url 로 이동 패턴 만들기
+
+1. FBV 스타일로 페이지 만들기
+
+    1-1. 전체 프로젝트 > urls.py에 url 추가
+    urlpatterns = [ path ('앱 이름', include('앱이름.urls')), ]
+
+    1-2. 앱 > urls.py에 url 추가
+    from . import views
+    urlpatterns = [ path('', views.index), ]
+
+    1-3.  앱 > views.py 에 사용할 템플릿(html 추가) >> 앱의 url에 들어갈
+    from django.shortcuts import render
+
+    3-(1) def index(request):
+           return render (
+              request,
+                'blog/index.html', ]
+
+    3-(2) 쿼리로 불러오기
+
+          def index(request):
+              post = Post.objects.all()
+
+              return render(
+                request,
+                'blog/index.html'
+                {
+                    'posts': post,
+
+                 }
+              }
+
+         3-(2)-2 쿼리 사용시 html 파일에 불러오기
+         {% for p in posts %}
+           {{p.title}}
+           {{p.created_at}}
+           {{% if ~ %}} ~~ {{% endif %}}
+
+         템플릿 필터 - {{변수 | 옵션 }}
+
+    1-4. 템플릿에 사용할 html 추가
+
+------------------------------------------------------------
+
+CBV로 페이지 만들기
+
+1. 앱 > urls.py에 url 추가
+
+urlpatterns = [
+   path('', views.PostList.as_view()),
+   path('<int:pk>/', views.single_post_page), ]
+
+
+------------------------------------------------------------
+
+bootstrap 스타일 적용
+1.  (django app) > static > (app명) > bootstrap4 디렉토리 생성
+2. bootstrap4 디렉토리 아래에 bootstrap.min.css(css)파일, map 추가
+3. template> html 파일에는 적절한 html 파일 긁어와서 ctrl c + ctrl v
+
+
+-------------------------------------------------------------
+
+
+template 추가
+1. django app > templates 디렉토리 생성
+2. templates 디렉토리 아래에 html 파일 생성
+
+
+--------------------------------------------------------------
+
+정적 파일 관리(css 적용하기)
+1. 앱 폴더에 static 만들고,  그 다음 css 파일 넣기
+(ex blog 앱이 있으면 blog> > static > blog > bootstrap )
+
+2. 업로드한 파일이 저장될 폴더 지정하기
+전체 프로젝트 > settings.py 에 MEDIA_URL 패스 저장
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
+
+3. 앱 이름 > models.py에 이미지를 저장할 수 있는 imageField 만들기
+
+head_image = models.ImageField(upload_to="blog/images/%Y/%m/%d/', blank=True) --> 필수 항목 x
+
+4. DB에 변경 사항 반영
+
+pip install Pillow
+python manage.py makemigrations
+python manage.py migrate
+
+5. 이미지를 위한 URL 처리하기
+5-1. 전체 파일 >urls.py
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+새로운 urlpatterns += static(settings.MEDIA_URL, document_root=setting.MEDIA_ROOT)
+
+5-2. head image의 이미지 파일을 템플릿에서 출력
+앱 > templates> 앱이름 > html 파일
+
+<div class="card mb-4">
+    <img class="card-img-top" src="{{p.head_image.url}}" alt="Card image cap">
+
++ 파일 업로드를 위한 Filefield (==imageField와 비슷함)
+
+--------------------------------------------------------------
+
+템플릿 필터 사용하기
+앱이름>html 파일
+<body>
+<p class="card-text"> {{p.content | truncatewords: 45}}</p> 첫 45개 단어만 보여주고 싶을때
+<p class="card-text"> {{p.content | truncatechars: 45}}</p> 첫 100문자만 보여주고 싶을때
+
+--------------------------------------------------------------
+
+오류 1
+
+no such table --> migrate 문제
+해결 방법
+1. migrate 할때,
+   python manage.py migrate --run-syncdb 실행 후
+2. python manage.py runserver
+
+
+오류 2
+
+no such column --> migrate 문제거나 sqlite3 문제
+db.sqlite3 삭제 후 makemigrations and migrate
+
+<db.sqlite 삭제 방법>
+find . -path "/migrations/.py" -not -name "init.py" -delete
+find . -path "/migrations/.pyc" -delete
+
+OR 폴더 가서 삭제하기
+
+오류 3
+바뀐 내용이 있는데도 불구하고 migrate 할게 없다고 나오면 --> migration 되돌리기
+
+방법 1
+1. python manage.py showmigrations => 현재 migrations이 어떻게 진행되었는지 눈으로 바로 보여준다.
+2. python manage.py migrate libs [특정 번호] => 특정 번호로 migration을 roll back해준다.
+-> 여기서 libs는 app 이름이다.
+3. python manage.py makemigrations => migrations 파일을 만들어준다.
+4. python manage.py migrate => migrations 파일을 직접 DB에 적용시켜준다.
+
+------------
+방법 2
+1.python manage.py showmigrations
+2. python manage.py migrate --fake core 앱이름
+후 makemigrations migrate
