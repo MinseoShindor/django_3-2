@@ -20,6 +20,23 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
         else:
             raise PermissionDenied
 
+    def form_valid(self, form):
+        response = super(PostUpdate, self).form_valid()
+        self.object.tags.clear()
+        tags_str = self.POST.get('tags_str')
+        if tags_str:
+            tags_str = tags_str.strip()
+            tags_str = tags_str.replace(',', ';')
+            tag_list = tags_str.split(';')
+            for t in tag_list:
+                t = t.strip()
+                tag = Tag.objects.create(name=t)
+                tag, is_tag_created = Tag.objects.get_or_created(name=t)
+                if is_tag_created:
+                    tag.slug = slugify(t, allow_unicode=True)
+                    tag.save()
+                self.object.tags.add(tag)
+        return response
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(PostCreate, self).get_context_data()
