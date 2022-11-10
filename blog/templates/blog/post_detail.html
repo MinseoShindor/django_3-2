@@ -22,12 +22,21 @@
     </div>
     <!-- Post categories-->
     {% if post.category %}
-        <a class="badge bg-secondary text-decoration-none link-light" href="{{g.category.get_absolute_url}}">{{post.category}}</a>
+        <a class="badge bg-secondary text-decoration-none link-light" href="{{g.category.get_absolute_url}}">
+          {{post.category}}
+        </a>
     {% else %}
-        <a class="badge bg-secondary text-decoration-none link-light" href="{{/blog/category/no_category}}">미분류</a>
+        <a class="badge bg-secondary text-decoration-none link-light" href="{{/blog/category/no_category}}">
+          미분류
+        </a>
     {% endif %}
   </header>
   <!-- Preview image figure-->
+  {% if user.is_authenticated and user == post.author %}
+  <a class="btn btn-info float-right" href="/blog/update_post/{{post.pk}}/" role="button">
+    <i class="fas fa-pen">Edit Post</i>
+  </a>
+  {% endif %}
   <figure class="mb-4">
     {% if post.head_image %}
     <img class="img-fluid rounded" src="{{post.head_image.url}}" alt="{{p.title}}의 head_image" />
