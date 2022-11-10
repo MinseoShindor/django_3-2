@@ -10,7 +10,7 @@ from django.utils.text import slugify
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category', 'tag']
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']  #'tags'
     # template_name = 'blog/post_update_form.html'
 
 
@@ -23,6 +23,11 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(PostCreate, self).get_context_data()
+        if self.object.tags.exist:
+            tag_str_list = list()
+            for t in self.object.tags.all():
+                tag_str_list.append(t.name)
+            context['tags_str_default'] = ';'.join(tag_str_list)
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count
         return context
@@ -51,6 +56,7 @@ class PostCreate(LoginRequiredMixin,UserPassesTestMixin,CreateView):
                     tag, is_tag_created = Tag.objects.get_or_created(name=t)
                     if is_tag_created:
                         tag.slug = slugify(t, allow_unicode=True)
+                        tag.save()
                     self.object.tags.add(tag)
             return response
         else:
